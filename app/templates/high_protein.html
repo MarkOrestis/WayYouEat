@@ -1,0 +1,9 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    <h1>Recipes High Protein</h1>
+    {% for recipe in recipes%}
+        <li>{{recipe.recipe.label}}</li>
+    {% endfor %}
+
+{% endblock %}
