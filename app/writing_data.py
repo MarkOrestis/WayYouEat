@@ -1,6 +1,5 @@
 from api_routes import getRecipes
 import requests
-import pickle
 
 def please_work():
     params = {
@@ -25,9 +24,7 @@ def please_work():
         rec = Recipes(label, calories, ingredients)
         list.append(rec)
     print(ingredients)
-    file1 = open('data.txt', 'w')
-    file1.write(pickle.dumps(list))
-    file1.close()
+
 
     # data = getRecipes()
     # print(data)
@@ -37,6 +34,7 @@ class Recipes:
         self.label = label
         self.calories = calories
         self.ingredients = ingredients
+
 please_work()
 
 
