@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<form class="input-group" style="margin-bottom: 10px" method="POST">
+    <input placeholder="Recipe Name..." name="text">
+    <input type="submit">
+</form>
+<div class="card">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">Walmart Price: {{price}} </li>
+      <li class="list-group-item">Ingredients: {{ingredients}}</li>
+      <li class="list-group-item">Calories: {{calories}}</li>
+    </ul>
+</div>
+{% endblock %}

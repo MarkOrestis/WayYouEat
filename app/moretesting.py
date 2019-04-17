@@ -1,27 +1,30 @@
-def subset(array, num):
-    result = []
-    meals = []
-    def find(arr, num, path=()):
-        if not arr:
-            return
-        if arr[0][0] == num:
-            result.append(path + (arr[0][0],arr[0][1]))
-        else:
-            find(arr[1:], num - arr[0][0], path + (arr[0][0], arr[0][1]))
-            find(arr[1:], num, path)
-    find(array, num)
-    for i in range(len(result) - 1):
-        if len(result[i]) == 6:
-            meals.append(result[i])
-    return meals
+import nltk
+from fuzzywuzzy import fuzz
+from nltk.corpus import wordnet as wn
+import requests
 
-# arr = [3, 4, 12, 10, 8, 5, 9, 18, 20, 14, 1, 1, 2, 1]
-arr = [(3, 'yo'), (4, 'hai'), (12, 'hi'), (10, 'allbymyself'), (8, 'ohmygod'), (5, 'awlord'), (9, 'please'), (18, 'plox'), (20, 'ihatehtis'), (14, 'but'), (1, 'shh'), (1, 'phmy'), (2, 'stap'), (1, 'nah')]
+ingredients = "1 cup soy sauce (preferably low-sodium), 1 cup Coca-Cola, 1/4 cup toasted sesame oil, 1/4 cup hoisin sauce, 4 cloves garlic, chopped, 4 scallions, minced, 2 rib-eye steaks (bone-in or boneless), or other steak, such as sirloin"
+tokens = nltk.word_tokenize(ingredients)
+tagged = nltk.pos_tag(tokens)
 
-n = 20
-meals = []
+word_list = []
+for i in tagged:
+    if (i[1] == 'NN' or i[1] == 'NNS'):
+      word_list.append(i[0])
+result = ' '.join(word_list)
 
-# for i in range(len(subset(arr, n)) - 1):
-#     if len(subset(arr, n)[i]) == 3: 
-#         meals.append(subset(arr,n)[i])
-print(subset(arr, n))
+#Output
+'cup soy sauce low-sodium cup cup oil cup hoisin sauce cloves scallions steaks bone-in boneless steak sirloin'
+
+
+food = wn.synset('food.n.02')
+food_lexicon = list(set([w for s in food.closure(lambda s:s.hyponyms()) for w in s.lemma_names()]))
+string = '1 inch-thick boneless shell steak'
+string2 = '1 cup soy sauce (preferably low-sodium), 1 cup Coca-Cola, 1/4 cup toasted sesame oil, 1/4 cup hoisin sauce, 4 cloves garlic, chopped, 4 scallions, minced, 2 rib-eye steaks (bone-in or boneless), or other steak, such as sirloin'
+words = string2.split()
+for i in food_lexicon:
+    if (result == i):
+        print('I exist: ', i)
+    # print(i)
+# print(fuzz.partial_ratio(result, another_result))
+# print(result)

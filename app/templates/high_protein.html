@@ -3,7 +3,11 @@
 {% block body %}
     <h1>Recipes High Protein</h1>
     {% for recipe in recipes%}
-        <li>{{recipe}}</li>
+    <div class="card">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">{{recipe}}</li>
+        </ul>
+      </div>
     {% endfor %}
 
 {% endblock %}
