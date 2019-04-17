@@ -19,10 +19,10 @@ ma = Marshmallow(app)
 @app.route('/')
 def hello_world():
     # params = {
-    #     'q': 'tuna',
+    #     'q': 'steak',
     #     'app_id': 'ddf72e19',
     #     'app_key': '252dcc512fe4f78bd1ab7a3004b42e18', 
-    #     'diet': 'high-protein',
+    #     'diet': 'balanced',
     #     'from': 0,
     #     'to': 10
     # }
@@ -32,7 +32,6 @@ def hello_world():
     # for i in recipes:
     #     label = i['recipe']['label']
     #     calories = round_up(i['recipe']['calories']/i['recipe']['yield'],-2)
-    #     # recipe_yield = i['recipe']['yield']
     #     ingredient_lines = i['recipe']['ingredientLines']
     #     diet_labels = i['recipe']['dietLabels']
 
@@ -105,6 +104,16 @@ def low_fat():
     result = subset(results.data[num:(num+10)], 2000)
     random.shuffle(result)
     return render_template('low_fat.html', recipes=result)
+
+@app.route('/balanced')
+def balanced():
+    recipes = Recipe.query.filter(Recipe.diet_labels.contains('Balanced'))
+    results = recipes_schema.dump(recipes)
+    # 47recipes
+    num = randint(0, 37)
+    result = subset(results.data[num:(num+10)], 2000)
+    random.shuffle(result)
+    return render_template('balanced.html', recipes=result)
 
 @app.route('/recipe-details')
 def price_form():
