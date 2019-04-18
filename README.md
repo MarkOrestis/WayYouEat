@@ -13,3 +13,11 @@
   <li><code>set FLASK_APP=app.py</code></li>
   <li><code>flask run</code></li>
 </ul>
+
+## Core Functionality
+
+<ul>
+  <li><strong>app.py</strong> is where the server is functionality is as well as the rendring of the templates</li>
+    <li><strong>api_routes.py</strong> has the algorithm implementation of the perfect sum problem</li>
+  <li><strong>get_price.py</strong> has the price functionality</li>
+</ul>
