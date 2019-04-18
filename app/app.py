@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from api_routes import subset, round_up
+from api_routes import subset, round_up, shuffle
 from get_price import getPrice
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
@@ -17,37 +17,7 @@ db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
 @app.route('/')
-def hello_world():
-    # params = {
-    #     'q': 'steak',
-    #     'app_id': 'ddf72e19',
-    #     'app_key': '252dcc512fe4f78bd1ab7a3004b42e18', 
-    #     'diet': 'balanced',
-    #     'from': 0,
-    #     'to': 10
-    # }
-    # r = requests.get('https://api.edamam.com/search?', params=params)
-    # recipes=r.json()['hits']
-
-    # for i in recipes:
-    #     label = i['recipe']['label']
-    #     calories = round_up(i['recipe']['calories']/i['recipe']['yield'],-2)
-    #     ingredient_lines = i['recipe']['ingredientLines']
-    #     diet_labels = i['recipe']['dietLabels']
-
-    #     string_diet = ', '.join(diet_labels)
-    #     string_ingredients = '- '.join(ingredient_lines)
-        
-    #     new_recipe = Recipe(label, calories, string_diet, string_ingredients)
-    #     db.session.add(new_recipe)
-    #     db.session.commit()
-    # return recipe_schema.jsonify(new_recipe)
-    # recipe = Recipe.query.filter(Recipe.label == 'Korean Steak')
-    # maybe = recipes_schema.dump(recipe)
-    # for i in maybe:
-    #     if (i != {}):
-    #         ingredients = i[0]['ingredients'].split('- ')
-    #         # ingredients.append(i[0]['ingredients'])
+def home():
     return render_template('home.html')
 
 #get all recipes
@@ -76,14 +46,9 @@ def low_carb():
     recipes = Recipe.query.filter(Recipe.diet_labels.contains('Low-Carb'))
     results = recipes_schema.dump(recipes)
     num = randint(0, 45)
-    result = subset(results.data[num:(num+10)], 2000)
-    random.shuffle(result)
-    if results:
-        print('Not empty')
-        return render_template('low_carb.html', recipes=result)
-    else:
-        print('data empty')
-        return
+    result = subset(results.data[num:(num+20)], 2000)
+    result = shuffle(result)
+    return render_template('low_carb.html', recipes=result)
 
 @app.route('/high-protein')
 def high_protein():
@@ -91,8 +56,8 @@ def high_protein():
     results = recipes_schema.dump(recipes)
     # 47recipes
     num = randint(0, 37)
-    result = subset(results.data[num:(num+10)], 2000)
-    random.shuffle(result)
+    result = subset(results.data[num:(num+20)], 2000)
+    result = shuffle(result)
     return render_template('high_protein.html', recipes=result)
 
 @app.route('/low-fat')
@@ -101,8 +66,8 @@ def low_fat():
     results = recipes_schema.dump(recipes)
     #47 recipes
     num = randint(0, 37)
-    result = subset(results.data[num:(num+10)], 2000)
-    random.shuffle(result)
+    result = subset(results.data[num:(num+20)], 2000)
+    result = shuffle(result)
     return render_template('low_fat.html', recipes=result)
 
 @app.route('/balanced')
@@ -111,8 +76,8 @@ def balanced():
     results = recipes_schema.dump(recipes)
     # 47recipes
     num = randint(0, 37)
-    result = subset(results.data[num:(num+10)], 2000)
-    random.shuffle(result)
+    result = subset(results.data[num:(num+20)], 2000)
+    result = shuffle(result)
     return render_template('balanced.html', recipes=result)
 
 @app.route('/recipe-details')
@@ -128,7 +93,7 @@ def price_form_post():
     price = getPrice(processed_text)
     final_price = "$" + str(price)
     return render_template('recipe_details.html', price=final_price , ingredients=result.data[0]['ingredients'],
-        calories=result.data[0]['calories'])
+        calories=result.data[0]['calories'], description=result.data[0]['description'])
 
 #Recipe Class
 class Recipe(db.Model):
@@ -137,17 +102,20 @@ class Recipe(db.Model):
     calories = db.Column(db.Integer)
     diet_labels = db.Column(db.String)
     ingredients = db.Column(db.String)
+    description = db.Column(db.String)
 
-    def __init__(self, label, calories, diet_labels, ingredients):
+    def __init__(self, label, calories, diet_labels, ingredients, description):
         self.label = label
         self.calories = calories
         self.diet_labels = diet_labels
         self.ingredients = ingredients
+        self.description = description
 
 #Recipe Schema
 class RecipeSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'label', 'calories', 'diet_labels', 'ingredients')
+        fields = ('id', 'label', 'calories', 'diet_labels', 'ingredients', 'description')
+
 
 #Init Schema
 recipe_schema = RecipeSchema(strict=True)

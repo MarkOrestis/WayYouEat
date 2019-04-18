@@ -1,5 +1,4 @@
 import requests, json, random, math
-from flask import request
 
 def subset(array, num):
     result = []
@@ -24,3 +23,12 @@ def subset(array, num):
 def round_up(n, decimals=0):
     multiplier = 10 ** decimals
     return math.ceil(n * multiplier) / multiplier
+
+def shuffle(result):
+    final_result = []
+    for i in result:
+        L = list(i)
+        random.shuffle(L)
+        final_result.append(tuple(L))
+    random.shuffle(final_result)
+    return final_result
