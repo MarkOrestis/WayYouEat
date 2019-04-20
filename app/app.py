@@ -88,8 +88,8 @@ def price_form():
 def price_form_post():
     text = request.form['text']
     processed_text = text.lower()
-    maybe = Recipe.query.filter(Recipe.label.contains(processed_text))
-    result = recipes_schema.dump(maybe)
+    filtered_rec = Recipe.query.filter(Recipe.label.contains(processed_text))
+    result = recipes_schema.dump(filtered_rec)
     price = getPrice(processed_text)
     final_price = "$" + str(price)
     return render_template('recipe_details.html', price=final_price , ingredients=result.data[0]['ingredients'],
